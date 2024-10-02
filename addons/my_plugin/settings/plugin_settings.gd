@@ -9,7 +9,7 @@ static var PluginProjectName: String = ProjectSettings.get_setting("application/
 static var PluginBasePath: String = "res://addons/%s" % PluginPrefixName
 static var PluginLocalConfigFilePath = "%s/plugin.cfg" % PluginBasePath
 static var PluginSettingsBasePath: String = "%s/config/%s" % [PluginProjectName, PluginPrefixName]
-static var RemoteReleasesUrl = "https://api.github.com/repos/bananaholograma/achievements/releases" # "https://api.github.com/repos/indie-pipeline/%s/releases" % GitRepositoryName
+static var RemoteReleasesUrl = "https://api.github.com/repos/indie-pipeline/%s/releases" % GitRepositoryName
 static var PluginTemporaryDirectoryPath = OS.get_user_data_dir() + "/" + PluginPrefixName
 static var PluginTemporaryReleaseUpdateDirectoryPath = "%s/update" % PluginTemporaryDirectoryPath
 static var PluginTemporaryReleaseFilePath = "%s/%s.zip" % [PluginTemporaryDirectoryPath, PluginPrefixName]
@@ -44,3 +44,5 @@ static func remove_settings() -> void:
 static func remove_setting(name: String) -> void:
 	if ProjectSettings.has_setting(name):
 		ProjectSettings.set_setting(name, null)
+		ProjectSettings.save()
+		

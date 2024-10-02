@@ -43,6 +43,7 @@ func run_update(progress_steps: int = 5, message: String = "Press 'Start Update'
 		
 	else:
 		push_warning("%s: The url %s is not valid, aborting download of the update..." % [MyPluginSettings.PluginName, download_url])
+		get_cancel_button().disabled = false
 		hide()
 		reset_progress_bars()
 
@@ -126,6 +127,7 @@ func on_http_request_request_completed(result: int, response_code: int, headers:
 	if result != HTTPRequest.RESULT_SUCCESS:
 		push_warning("An http error %d happened, update could not be done, release cannot be retrieved from GitHub!" % result)
 		await update_progress("Failed update, aborting...", Color.RED)
+		get_cancel_button().disabled = false
 		queue_free()
 		
 		return

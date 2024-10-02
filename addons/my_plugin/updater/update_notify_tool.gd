@@ -47,7 +47,7 @@ func _ready() -> void:
 	
 	
 func check_for_update() -> void:
-	if is_instance_valid(http_request_client) and http_request_client.is_inside_tree():
+	if is_instance_valid(http_request_client) and http_request_client.is_inside_tree() and MyPluginSettings.is_update_notification_enabled():
 		var error: Error = http_request_client.request(MyPluginSettings.RemoteReleasesUrl)
 		
 		if error != OK:
