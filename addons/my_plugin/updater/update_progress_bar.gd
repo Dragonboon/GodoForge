@@ -1,6 +1,8 @@
 @tool
 extends ConfirmationDialog
 
+signal update_finished
+
 @onready var http_request: HTTPRequest = $HTTPRequest
 @onready var progress_content: RichTextLabel = %message
 @onready var progress_bar: TextureProgressBar = %progress
@@ -35,7 +37,6 @@ func run_update(progress_steps: int = 5, message: String = "Press 'Start Update'
 		
 		create_message_on_progress_bar(message)
 		init_progress(progress_steps)
-		
 		
 		await update_progress("Downloading Release...")
 		download_release()
@@ -170,8 +171,6 @@ func on_http_request_request_completed(result: int, response_code: int, headers:
 				
 			EditorInterface.get_resource_filesystem().scan()
 			enable_plugin()
-		
-			EditorInterface.restart_editor(true)
-		
-	queue_free()
-	
+			update_finished.emit()
+			
+			queue_free()

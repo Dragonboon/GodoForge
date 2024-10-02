@@ -60,7 +60,16 @@ func latest_release_version(releases: Array, _current_version: MyPluginVersion =
 		return versions.front()
 	
 	return null
-	
+
+
+func _create_update_progress_bar() -> void:
+	var update_progress_bar = UpdateProgressBar.instantiate()
+	update_progress_bar.download_url = available_latest_version.zipball_url
+	(Engine.get_main_loop() as SceneTree).root.add_child(update_progress_bar)
+	update_progress_bar.popup_centered()
+	update_progress_bar.canceled.connect(func(): update_button.disabled = false)
+	update_progress_bar.update_finished.connect(func(): EditorInterface.restart_editor(true))
+
 
 func _prepare_update_interval_checker_timer():
 	if update_checker_timer:
@@ -81,13 +90,9 @@ func on_update_button_pressed() -> void:
 	if available_latest_version is Dictionary:
 		update_button.disabled = true
 		ScriptEditorControls.close_open_editor_scripts()
-		
-		var update_progress_bar = UpdateProgressBar.instantiate()
-		update_progress_bar.download_url = available_latest_version.zipball_url
-		(Engine.get_main_loop() as SceneTree).root.add_child(update_progress_bar)
-		update_progress_bar.popup_centered()
-	
-	
+		_create_update_progress_bar()
+
+
 func on_show_next_button_toggled(enabled: bool) -> void:
 	MyPluginSettings.set_update_notification(enabled)
 
