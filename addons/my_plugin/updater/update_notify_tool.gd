@@ -68,7 +68,10 @@ func _create_update_progress_bar() -> void:
 	(Engine.get_main_loop() as SceneTree).root.add_child(update_progress_bar)
 	update_progress_bar.popup_centered()
 	update_progress_bar.canceled.connect(func(): update_button.disabled = false)
-	update_progress_bar.update_finished.connect(func(): EditorInterface.restart_editor(true))
+	update_progress_bar.update_finished.connect(func(): 
+		EditorInterface.restart_editor(true)
+		queue_free()
+	)
 
 
 func _prepare_update_interval_checker_timer():

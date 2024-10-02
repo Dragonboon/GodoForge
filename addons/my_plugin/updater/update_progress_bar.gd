@@ -172,5 +172,3 @@ func on_http_request_request_completed(result: int, response_code: int, headers:
 			EditorInterface.get_resource_filesystem().scan()
 			enable_plugin()
 			update_finished.emit()
-			
-			queue_free()

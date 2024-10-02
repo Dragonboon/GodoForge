@@ -8,6 +8,7 @@ gui_embed_subwindows = true
 title = "MyPlugin Update Notification"
 initial_position = 1
 size = Vector2i(800, 400)
+visible = false
 wrap_controls = true
 transient = true
 exclusive = true
@@ -48,7 +49,6 @@ theme_override_constants/margin_bottom = 4
 [node name="header" type="Label" parent="Panel/GridContainer/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 9
-text = "A new version v1.0.1 is available to update"
 horizontal_alignment = 1
 
 [node name="PanelContainer2" type="PanelContainer" parent="Panel/GridContainer"]
@@ -100,6 +100,7 @@ custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
+disabled = true
 text = "Update"
 
 [node name="close" type="Button" parent="Panel/GridContainer/Panel/HBoxContainer"]
