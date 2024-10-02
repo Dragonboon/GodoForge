@@ -23,6 +23,8 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
+	title = "Update %s to new version" % MyPluginSettings.PluginName
+
 	set_process(false)
 	
 	if not http_request.request_completed.is_connected(on_http_request_request_completed):
@@ -134,7 +136,14 @@ func on_http_request_request_completed(result: int, response_code: int, headers:
 	
 	await update_progress("Installing new %s version ..." % MyPluginSettings.PluginName)
 	
-	PluginUtilities.copy_directory_recursive(MyPluginSettings.PluginTemporaryReleaseUpdateDirectoryPath, MyPluginSettings.PluginBasePath)
+	if MyPluginSettings.DebugMode:
+		if not DirAccess.dir_exists_absolute(MyPluginSettings.PluginDebugDirectoryPath):
+			DirAccess.make_dir_absolute(MyPluginSettings.PluginDebugDirectoryPath)
+		PluginUtilities.copy_directory_recursive(MyPluginSettings.PluginTemporaryReleaseUpdateDirectoryPath, MyPluginSettings.PluginDebugDirectoryPath)
+	else:
+		PluginUtilities.copy_directory_recursive(MyPluginSettings.PluginTemporaryReleaseUpdateDirectoryPath, MyPluginSettings.PluginBasePath)
+		
+	
 	EditorInterface.get_resource_filesystem().scan()
 	
 	await update_progress("New %s version successfully installed, Restarting Godot ..." % MyPluginSettings.PluginName)

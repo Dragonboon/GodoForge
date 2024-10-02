@@ -4,7 +4,7 @@
 
 [node name="UpdateProgressBar" type="ConfirmationDialog"]
 disable_3d = true
-title = "Update GdUnit4 to new version"
+title = "Update MyPlugin to new version"
 size = Vector2i(1000, 141)
 visible = true
 extend_to_title = true

@@ -12,15 +12,15 @@ static var PluginLocalConfigFilePath = "res://addons/%s/plugin.cfg" % PluginPref
 static var PluginTemporaryDirectoryPath = OS.get_user_data_dir() + PluginPrefixName
 static var PluginTemporaryReleaseUpdateDirectoryPath = "%s/update" % PluginTemporaryDirectoryPath
 static var PluginTemporaryReleaseFilePath = "%s/%s.zip" % [PluginTemporaryDirectoryPath, PluginPrefixName]
+static var PluginDebugDirectoryPath = "res://debug"
 
 #region Plugin Settings
 static var UpdateNotificationEnabled: String = PluginSettingsBasePath + "/update_notification_enabled"
 #endregion
 
+static var DebugMode: bool = true
 
 static func set_update_notification(enable: bool = true) -> void:
-	
-	
 	ProjectSettings.set_setting(UpdateNotificationEnabled, enable)
 	ProjectSettings.add_property_info({
 		"name": UpdateNotificationEnabled,
