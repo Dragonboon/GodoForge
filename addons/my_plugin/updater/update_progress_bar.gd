@@ -1,12 +1,6 @@
 @tool
 extends ConfirmationDialog
 
-signal saved_release_on_temporary_folder
-signal removed_old_addon_version
-signal installed_new_addon_version
-signal removed_release_temporary_folder
-signal updated
-
 @onready var http_request: HTTPRequest = $HTTPRequest
 @onready var progress_content: RichTextLabel = %message
 @onready var progress_bar: TextureProgressBar = %progress
@@ -32,10 +26,9 @@ func _ready() -> void:
 		
 
 @warning_ignore("return_value_discarded")
-func run_update(progress_steps: int = 5, message: String = "Press 'Update' to start!") -> void:
+func run_update(progress_steps: int = 5, message: String = "Press 'Start Update' to start!") -> void:
 	if PluginUtilities.is_valid_url(download_url):
 		show()
-		popup_centered_ratio(.5)
 		set_process(true)
 		get_cancel_button().disabled = true
 		get_ok_button().disabled = true
@@ -62,7 +55,7 @@ func update_progress(message: String, color: Color = Color.GREEN) -> void:
 	create_message_on_progress_bar(message, color)
 	progress_bar.value += 1
 	
-	await get_tree().create_timer(0.5).timeout
+	await get_tree().create_timer(1.0).timeout
 
 
 func create_message_on_progress_bar(message: String, color: Color = Color.GREEN) -> void:
@@ -76,12 +69,41 @@ func reset_progress_bars() -> void:
 	
 	
 func download_release() -> void:
-	print(download_url)
 	http_request.request(download_url)
 
 
+func extract_release_zip() -> bool:
+	var zip_reader : ZIPReader = ZIPReader.new()
+	var zip_error: Error = zip_reader.open(MyPluginSettings.PluginTemporaryReleaseFilePath)
+	
+	if zip_error != OK:
+		push_error("Extracting `%s` failed! Please collect the error log and report this. Error Code: %s" % [MyPluginSettings.PluginTemporaryReleaseFilePath, zip_error])
+		update_progress("Extracting `%s` failed! Please collect the error log and report this. Error Code: %s" % [MyPluginSettings.PluginTemporaryReleaseFilePath, zip_error], Color.RED)
+		
+		return false
+	
+	var downloaded_version_files: PackedStringArray = zip_reader.get_files()
+	
+	var archive_path := downloaded_version_files[0]
+	downloaded_version_files.remove_at(0)
+
+	for release_version_file: String in downloaded_version_files:
+		var new_file_path: String = MyPluginSettings.PluginTemporaryReleaseUpdateDirectoryPath + "/" + release_version_file.replace(archive_path, "")
+		
+		if release_version_file.ends_with("/"):
+			DirAccess.make_dir_recursive_absolute(new_file_path)
+			continue
+			
+		var file: FileAccess = FileAccess.open(new_file_path, FileAccess.WRITE)
+		file.store_buffer(zip_reader.read_file(release_version_file))
+		
+	zip_reader.close()
+	
+	return true
+
+
 func on_confirmed() -> void:
-	await run_update()
+	await run_update(7)
 	
 
 func on_http_request_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
@@ -92,71 +114,48 @@ func on_http_request_request_completed(result: int, response_code: int, headers:
 		
 		return
 	
-	print("saving into... ", MyPluginSettings.PluginTemporaryReleaseFilePath)
 	await update_progress("Saving release into temporary path %s " %  MyPluginSettings.PluginTemporaryReleaseFilePath)
 	
 	var downloaded_version: FileAccess = FileAccess.open(MyPluginSettings.PluginTemporaryReleaseFilePath, FileAccess.WRITE)
 	downloaded_version.store_buffer(body)
 	downloaded_version.close()
-	saved_release_on_temporary_folder.emit()
-	
 	
 	if FileAccess.file_exists(MyPluginSettings.PluginTemporaryReleaseFilePath):
 		await update_progress("Extracting release into %s " % MyPluginSettings.PluginTemporaryReleaseUpdateDirectoryPath)
 		
-		var zip_reader : ZIPReader = ZIPReader.new()
-		var zip_error: Error = zip_reader.open(MyPluginSettings.PluginTemporaryReleaseFilePath)
-		
-		if zip_error != OK:
-			push_error("Extracting `%s` failed! Please collect the error log and report this. Error Code: %s" % [MyPluginSettings.PluginTemporaryReleaseFilePath, zip_error])
-			return
-		
-		var downloaded_version_files: PackedStringArray = zip_reader.get_files()
-		
-		var archive_path := downloaded_version_files[0]
-		downloaded_version_files.remove_at(0)
-
-		for release_version_file: String in downloaded_version_files:
-			var new_file_path: String = MyPluginSettings.PluginTemporaryReleaseUpdateDirectoryPath + "/" + release_version_file.replace(archive_path, "")
+		if extract_release_zip():
+			await update_progress("Uninstalling %s ..." % MyPluginSettings.PluginName)
 			
-			if release_version_file.ends_with("/"):
-				DirAccess.make_dir_recursive_absolute(new_file_path)
-				continue
+			EditorInterface.set_plugin_enabled(MyPluginSettings.PluginPrefixName, false)
+			
+			if MyPluginSettings.DebugMode:
+				if DirAccess.dir_exists_absolute(MyPluginSettings.PluginDebugDirectoryPath):
+					PluginUtilities.remove_files_recursive(MyPluginSettings.PluginDebugDirectoryPath)
+			else:
+				PluginUtilities.remove_files_recursive(MyPluginSettings.PluginBasePath)
 				
-			var file: FileAccess = FileAccess.open(new_file_path, FileAccess.WRITE)
-			file.store_buffer(zip_reader.read_file(release_version_file))
+			EditorInterface.get_resource_filesystem().scan()
 			
-		zip_reader.close()
-	
-	await update_progress("Uninstalling %s ..." % MyPluginSettings.PluginName)
-	
-	EditorInterface.set_plugin_enabled(MyPluginSettings.PluginPrefixName, false)
-	PluginUtilities.remove_files_recursive(MyPluginSettings.PluginBasePath)
-	EditorInterface.get_resource_filesystem().scan()
-	
-	await update_progress("Installing new %s version ..." % MyPluginSettings.PluginName)
-	
-	if MyPluginSettings.DebugMode:
-		if not DirAccess.dir_exists_absolute(MyPluginSettings.PluginDebugDirectoryPath):
-			DirAccess.make_dir_absolute(MyPluginSettings.PluginDebugDirectoryPath)
-		PluginUtilities.copy_directory_recursive(MyPluginSettings.PluginTemporaryReleaseUpdateDirectoryPath, MyPluginSettings.PluginDebugDirectoryPath)
-	else:
-		PluginUtilities.copy_directory_recursive(MyPluginSettings.PluginTemporaryReleaseUpdateDirectoryPath, MyPluginSettings.PluginBasePath)
+			await update_progress("Installing new %s version ..." % MyPluginSettings.PluginName)
+			
+			if MyPluginSettings.DebugMode:
+				if not DirAccess.dir_exists_absolute(MyPluginSettings.PluginDebugDirectoryPath):
+					DirAccess.make_dir_absolute(MyPluginSettings.PluginDebugDirectoryPath)
+				PluginUtilities.copy_directory_recursive(MyPluginSettings.PluginTemporaryReleaseUpdateDirectoryPath, MyPluginSettings.PluginDebugDirectoryPath)
+			else:
+				PluginUtilities.copy_directory_recursive(MyPluginSettings.PluginTemporaryReleaseUpdateDirectoryPath, "res://")
+				
+			EditorInterface.get_resource_filesystem().scan()
+			
+			await update_progress("New %s version successfully installed, Restarting Godot ..." % MyPluginSettings.PluginName)
+			await get_tree().create_timer(2).timeout
+			
+			if FileAccess.file_exists(MyPluginSettings.PluginTemporaryReleaseFilePath):
+				DirAccess.remove_absolute(MyPluginSettings.PluginTemporaryReleaseFilePath)
+				
+			EditorInterface.get_resource_filesystem().scan()
+			EditorInterface.set_plugin_enabled(MyPluginSettings.PluginPrefixName, true)
+			EditorInterface.restart_editor(true)
 		
-	
-	EditorInterface.get_resource_filesystem().scan()
-	
-	await update_progress("New %s version successfully installed, Restarting Godot ..." % MyPluginSettings.PluginName)
-	await get_tree().create_timer(2).timeout
-	
-	if FileAccess.file_exists(MyPluginSettings.PluginTemporaryReleaseFilePath):
-		DirAccess.remove_absolute(MyPluginSettings.PluginTemporaryReleaseFilePath)
-		
-	EditorInterface.get_resource_filesystem().scan()
-	EditorInterface.set_plugin_enabled(MyPluginSettings.PluginPrefixName, true)
-
 	queue_free()
-	
-	EditorInterface.restart_editor(true)
-	
 	

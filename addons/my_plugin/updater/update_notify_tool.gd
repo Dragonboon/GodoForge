@@ -32,7 +32,6 @@ func _enter_tree() -> void:
 	initial_position = WINDOW_INITIAL_POSITION_CENTER_PRIMARY_SCREEN
 	
 	_prepare_update_interval_checker_timer()
-	Engine.get_main_loop().root.add_child.call_deferred(UpdateProgressBar.instantiate())
 
 
 func _ready() -> void:
@@ -41,16 +40,17 @@ func _ready() -> void:
 	header.text = ""
 	content.text = ""
 	# wait 20s to allow the editor to initialize itself
-	await get_tree().create_timer(2).timeout
+	await get_tree().create_timer(5).timeout
 	check_for_update()
 	
 	
 func check_for_update() -> void:
-	var error: Error = http_request_client.request(MyPluginSettings.RemoteReleasesUrl)
-	
-	if error != OK:
-		push_warning("An error %d happened, update information cannot be retrieved from GitHub!" % error)
-		return
+	if is_instance_valid(http_request_client):
+		var error: Error = http_request_client.request(MyPluginSettings.RemoteReleasesUrl)
+		
+		if error != OK:
+			push_warning("An error %d happened, update information cannot be retrieved from GitHub!" % error)
+			return
 
 
 func latest_release_version(releases: Array, _current_version: MyPluginVersion = current_version):
@@ -86,7 +86,7 @@ func on_update_button_pressed() -> void:
 		update_progress_bar.download_url = available_latest_version.zipball_url
 		(Engine.get_main_loop() as SceneTree).root.add_child(update_progress_bar)
 		update_progress_bar.popup_centered()
-
+	
 	
 func on_show_next_button_toggled(enabled: bool) -> void:
 	MyPluginSettings.set_update_notification(enabled)
@@ -106,3 +106,5 @@ func on_http_request_request_completed(result: int, response_code: int, headers:
 			update_button.disabled = false
 			header.text = "A new version %s is available to update" % MyPluginVersion.parse(available_latest_version.tag_name)
 			show()
+			popup_centered_ratio(.5)
+			
