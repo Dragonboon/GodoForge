@@ -60,7 +60,7 @@ func update_progress(message: String, color: Color = Color.GREEN) -> void:
 
 func create_message_on_progress_bar(message: String, color: Color = Color.GREEN) -> void:
 	progress_content.clear()
-	progress_content.append_text("[font_size=16][color=#%s]%s[/color][/font_size]" % [color.to_html(), message])
+	progress_content.append_text("[font_size=14][color=#%s]%s[/color][/font_size]" % [color.to_html(), message])
 	 
 
 func reset_progress_bars() -> void:
@@ -100,6 +100,21 @@ func extract_release_zip() -> bool:
 	zip_reader.close()
 	
 	return true
+
+
+func enable_plugin() -> void:
+	EditorInterface.set_plugin_enabled(MyPluginSettings.PluginPrefixName, true)
+	
+	var enabled_plugins := PackedStringArray()
+	
+	if ProjectSettings.has_setting("editor_plugins/enabled"):
+		enabled_plugins = ProjectSettings.get_setting("editor_plugins/enabled")
+		
+	if not enabled_plugins.has(MyPluginSettings.PluginLocalConfigFilePath):
+		enabled_plugins.append(MyPluginSettings.PluginLocalConfigFilePath)
+		
+	ProjectSettings.set_setting("editor_plugins/enabled", enabled_plugins)
+	ProjectSettings.save()
 
 
 func on_confirmed() -> void:
@@ -154,7 +169,8 @@ func on_http_request_request_completed(result: int, response_code: int, headers:
 				DirAccess.remove_absolute(MyPluginSettings.PluginTemporaryReleaseFilePath)
 				
 			EditorInterface.get_resource_filesystem().scan()
-			EditorInterface.set_plugin_enabled(MyPluginSettings.PluginPrefixName, true)
+			enable_plugin()
+		
 			EditorInterface.restart_editor(true)
 		
 	queue_free()
