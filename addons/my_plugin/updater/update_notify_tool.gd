@@ -38,9 +38,11 @@ func _ready() -> void:
 	update_button.disabled = true
 	show_next_button.button_pressed = MyPluginSettings.is_update_notification_enabled()
 	header.text = ""
+	content.clear()
 	content.text = ""
+
 	# wait 20s to allow the editor to initialize itself
-	await get_tree().create_timer(5).timeout
+	await get_tree().create_timer(20).timeout
 	check_for_update()
 	
 	
@@ -112,7 +114,8 @@ func on_http_request_request_completed(result: int, response_code: int, headers:
 #		
 		if available_latest_version is Dictionary:
 			update_button.disabled = false
+			content.clear()
+			content.text = ""
+			content.append_text(available_latest_version.body)
 			header.text = "A new version %s is available to update" % MyPluginVersion.parse(available_latest_version.tag_name)
 			show()
-			popup_centered_ratio(.5)
-			

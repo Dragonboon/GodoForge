@@ -49,6 +49,7 @@ theme_override_constants/margin_bottom = 4
 [node name="header" type="Label" parent="Panel/GridContainer/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 9
+text = "A new version v1.0.1 is available to update"
 horizontal_alignment = 1
 
 [node name="PanelContainer2" type="PanelContainer" parent="Panel/GridContainer"]
@@ -64,10 +65,10 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 15
 
 [node name="content" type="RichTextLabel" parent="Panel/GridContainer/PanelContainer2/ScrollContainer/MarginContainer"]
 layout_mode = 2
@@ -100,7 +101,6 @@ custom_minimum_size = Vector2(100, 40)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
-disabled = true
 text = "Update"
 
 [node name="close" type="Button" parent="Panel/GridContainer/Panel/HBoxContainer"]
