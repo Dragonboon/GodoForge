@@ -14,10 +14,6 @@ config/name="godot-plugin-template"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
 
-[godot-plugin-template]
-
-config/my_plugin/update_notification_enabled=true
-
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

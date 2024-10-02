@@ -5,9 +5,10 @@ const PluginPrefixName: String = "my_plugin"
 const GitRepositoryName: String = "my-plugin"
 
 static var PluginName: String = "MyPlugin"
+static var PluginProjectName: String = ProjectSettings.get_setting("application/config/name")
 static var PluginBasePath: String = "res://addons/%s" % PluginPrefixName
 static var PluginLocalConfigFilePath = "%s/plugin.cfg" % PluginBasePath
-static var PluginSettingsBasePath: String = "%s/config/%s" % [PluginName, PluginPrefixName]
+static var PluginSettingsBasePath: String = "%s/config/%s" % [PluginProjectName, PluginPrefixName]
 static var RemoteReleasesUrl = "https://api.github.com/repos/bananaholograma/achievements/releases" # "https://api.github.com/repos/indie-pipeline/%s/releases" % GitRepositoryName
 static var PluginTemporaryDirectoryPath = OS.get_user_data_dir() + "/" + PluginPrefixName
 static var PluginTemporaryReleaseUpdateDirectoryPath = "%s/update" % PluginTemporaryDirectoryPath
@@ -15,15 +16,15 @@ static var PluginTemporaryReleaseFilePath = "%s/%s.zip" % [PluginTemporaryDirect
 static var PluginDebugDirectoryPath = "res://debug"
 
 #region Plugin Settings
-static var UpdateNotificationEnabled: String = PluginSettingsBasePath + "/update_notification_enabled"
+static var UpdateNotificationSetting: String = PluginSettingsBasePath + "/update_notification_enabled"
 #endregion
 
 static var DebugMode: bool = true
 
 static func set_update_notification(enable: bool = true) -> void:
-	ProjectSettings.set_setting(UpdateNotificationEnabled, enable)
+	ProjectSettings.set_setting(UpdateNotificationSetting, enable)
 	ProjectSettings.add_property_info({
-		"name": UpdateNotificationEnabled,
+		"name": UpdateNotificationSetting,
 		"type": typeof(enable),
 	 	"value": enable,
 		"hint": PROPERTY_HINT_TYPE_STRING,
@@ -33,11 +34,11 @@ static func set_update_notification(enable: bool = true) -> void:
 
 
 static func is_update_notification_enabled() -> bool:
-	return ProjectSettings.get_setting(UpdateNotificationEnabled, true)
+	return ProjectSettings.get_setting(UpdateNotificationSetting, true)
 
 
 static func remove_settings() -> void:
-	remove_setting(UpdateNotificationEnabled)
+	remove_setting(UpdateNotificationSetting)
 
 
 static func remove_setting(name: String) -> void:
