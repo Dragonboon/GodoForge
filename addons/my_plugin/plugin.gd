@@ -7,6 +7,9 @@ func _enter_tree() -> void:
 	
 	_setup_updater()
 	
+	if not DirAccess.dir_exists_absolute(MyPluginSettings.PluginTemporaryReleaseUpdateDirectoryPath):
+		DirAccess.make_dir_recursive_absolute(MyPluginSettings.PluginTemporaryReleaseUpdateDirectoryPath)
+	
 
 func _exit_tree() -> void:
 	MyPluginSettings.remove_settings()

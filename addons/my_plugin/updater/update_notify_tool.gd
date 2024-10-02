@@ -1,8 +1,6 @@
 @tool
 extends Window
 
-#const PluginUpdateClient = preload("res://addons/my_plugin/updater/update_client.gd")
-
 @onready var http_request_client: HTTPRequest = $HttpRequestClient
 @onready var update_checker_timer: Timer = $UpdateCheckerTimer
 @onready var header: Label = $Panel/GridContainer/PanelContainer/header
@@ -12,10 +10,12 @@ extends Window
 @onready var show_next_button: CheckBox = $Panel/GridContainer/Panel/HBoxContainer/show_next
 @onready var close_button: Button = $Panel/GridContainer/Panel/HBoxContainer/close
 
+const UpdateProgressBar: PackedScene = preload("update_progress_bar.tscn")
 
 var debug_mode: = false
 var current_version: MyPluginVersion = MyPluginVersion.current()
 var download_zip_url: String
+var available_latest_version: Dictionary = {}
 
 
 func _notification(what :int) -> void:
@@ -32,7 +32,8 @@ func _enter_tree() -> void:
 	initial_position = WINDOW_INITIAL_POSITION_CENTER_PRIMARY_SCREEN
 	
 	_prepare_update_interval_checker_timer()
-	
+	Engine.get_main_loop().root.add_child.call_deferred(UpdateProgressBar.instantiate())
+
 
 func _ready() -> void:
 	update_button.disabled = true
@@ -56,7 +57,7 @@ func latest_release_version(releases: Array, _current_version: MyPluginVersion =
 	var versions = releases.filter(func(release: Dictionary): return MyPluginVersion.parse(release.tag_name).is_greater(_current_version))
 	
 	if versions.size() > 0:
-		return MyPluginVersion.parse(versions.front().tag_name)
+		return versions.front()
 	
 	return null
 	
@@ -68,7 +69,8 @@ func _prepare_update_interval_checker_timer():
 		update_checker_timer.one_shot = false
 		update_checker_timer.wait_time = (60 * 60 * 12) # Check for updates two times in a day
 		
-		update_checker_timer.timeout.connect(check_for_update)
+		if not update_checker_timer.timeout.is_connected(check_for_update):
+			update_checker_timer.timeout.connect(check_for_update)
 
 
 func on_close_button_pressed() -> void:
@@ -76,8 +78,15 @@ func on_close_button_pressed() -> void:
 
 
 func on_update_button_pressed() -> void:
-	pass
-	
+	if available_latest_version is Dictionary:
+		update_button.disabled = true
+		ScriptEditorControls.close_open_editor_scripts()
+		
+		var update_progress_bar = UpdateProgressBar.instantiate()
+		update_progress_bar.download_url = available_latest_version.zipball_url
+		(Engine.get_main_loop() as SceneTree).root.add_child(update_progress_bar)
+		update_progress_bar.popup_centered()
+
 	
 func on_show_next_button_toggled(enabled: bool) -> void:
 	MyPluginSettings.set_update_notification(enabled)
@@ -91,9 +100,9 @@ func on_http_request_request_completed(result: int, response_code: int, headers:
 	var response = JSON.parse_string(body.get_string_from_utf8())
 
 	if response and typeof(response) == TYPE_ARRAY:
-		var available_latest_version = latest_release_version(response as Array, current_version)
+		available_latest_version = latest_release_version(response as Array, current_version)
 #		
-		if available_latest_version is MyPluginVersion:
+		if available_latest_version is Dictionary:
 			update_button.disabled = false
-			header.text = "A new version %s is available to update" % available_latest_version
+			header.text = "A new version %s is available to update" % MyPluginVersion.parse(available_latest_version.tag_name)
 			show()

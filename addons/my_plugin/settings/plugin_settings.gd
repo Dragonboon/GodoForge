@@ -4,10 +4,14 @@ class_name MyPluginSettings extends RefCounted
 const PluginPrefixName: String = "my_plugin"
 const GitRepositoryName: String = "my-plugin"
 
+static var PluginBasePath: String = "res://addons/%s" % PluginPrefixName
 static var PluginName: String = "MyPlugin"
 static var PluginSettingsBasePath: String = "%s/config/%s" % [PluginName, PluginPrefixName]
-static var RemoteReleasesUrl = "https://api.github.com/repos/indie-pipeline/%s/releases" % GitRepositoryName
+static var RemoteReleasesUrl = "https://api.github.com/repos/bananaholograma/achievements/releases" # "https://api.github.com/repos/indie-pipeline/%s/releases" % GitRepositoryName
 static var PluginLocalConfigFilePath = "res://addons/%s/plugin.cfg" % PluginPrefixName
+static var PluginTemporaryDirectoryPath = OS.get_user_data_dir() + PluginPrefixName
+static var PluginTemporaryReleaseUpdateDirectoryPath = "%s/update" % PluginTemporaryDirectoryPath
+static var PluginTemporaryReleaseFilePath = "%s/%s.zip" % [PluginTemporaryDirectoryPath, PluginPrefixName]
 
 #region Plugin Settings
 static var UpdateNotificationEnabled: String = PluginSettingsBasePath + "/update_notification_enabled"
@@ -15,6 +19,8 @@ static var UpdateNotificationEnabled: String = PluginSettingsBasePath + "/update
 
 
 static func set_update_notification(enable: bool = true) -> void:
+	
+	
 	ProjectSettings.set_setting(UpdateNotificationEnabled, enable)
 	ProjectSettings.add_property_info({
 		"name": UpdateNotificationEnabled,
