@@ -1,0 +1,39 @@
+@tool
+class_name MyPluginSettings extends RefCounted
+
+const PluginPrefixName: String = "my_plugin"
+const GitRepositoryName: String = "my-plugin"
+
+static var PluginName: String = "MyPlugin"
+static var PluginSettingsBasePath: String = "%s/config/%s" % [PluginName, PluginPrefixName]
+static var RemoteReleasesUrl = "https://api.github.com/repos/indie-pipeline/%s/releases" % GitRepositoryName
+static var PluginLocalConfigFilePath = "res://addons/%s/plugin.cfg" % PluginPrefixName
+
+#region Plugin Settings
+static var UpdateNotificationEnabled: String = PluginSettingsBasePath + "/update_notification_enabled"
+#endregion
+
+
+static func set_update_notification(enable: bool = true) -> void:
+	ProjectSettings.set_setting(UpdateNotificationEnabled, enable)
+	ProjectSettings.add_property_info({
+		"name": UpdateNotificationEnabled,
+		"type": typeof(enable),
+	 	"value": enable,
+		"hint": PROPERTY_HINT_TYPE_STRING,
+		"hint_string": "Turn notifications on or off to receive alerts when new versions of the plugin are released"
+	})
+	ProjectSettings.save()
+
+
+static func is_update_notification_enabled() -> bool:
+	return ProjectSettings.get_setting(UpdateNotificationEnabled, true)
+
+
+static func remove_settings() -> void:
+	remove_setting(UpdateNotificationEnabled)
+
+
+static func remove_setting(name: String) -> void:
+	if ProjectSettings.has_setting(name):
+		ProjectSettings.set_setting(name, null)
