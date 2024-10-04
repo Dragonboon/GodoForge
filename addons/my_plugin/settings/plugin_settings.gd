@@ -19,7 +19,7 @@ static var PluginDebugDirectoryPath = "res://debug"
 static var UpdateNotificationSetting: String = PluginSettingsBasePath + "/update_notification_enabled"
 #endregion
 
-static var DebugMode: bool = true
+static var DebugMode: bool = false
 
 static func set_update_notification(enable: bool = true) -> void:
 	ProjectSettings.set_setting(UpdateNotificationSetting, enable)
