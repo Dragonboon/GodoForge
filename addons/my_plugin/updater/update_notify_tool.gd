@@ -55,13 +55,13 @@ func check_for_update() -> void:
 			return
 
 
-func latest_release_version(releases: Array, _current_version: MyPluginVersion = current_version):
+func latest_release_version(releases: Array, _current_version: MyPluginVersion = current_version) -> Dictionary:
 	var versions = releases.filter(func(release: Dictionary): return MyPluginVersion.parse(release.tag_name).is_greater(_current_version))
 	
 	if versions.size() > 0:
 		return versions.front()
 	
-	return null
+	return {}
 
 
 func _create_update_progress_bar() -> void:
@@ -112,7 +112,7 @@ func on_http_request_request_completed(result: int, response_code: int, headers:
 	if response and typeof(response) == TYPE_ARRAY:
 		available_latest_version = latest_release_version(response as Array, current_version)
 #		
-		if available_latest_version is Dictionary:
+		if available_latest_version.size() > 0:
 			update_button.disabled = false
 			content.clear()
 			content.text = ""
