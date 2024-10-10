@@ -111,7 +111,7 @@ func on_http_request_request_completed(result: int, response_code: int, headers:
 
 	if response and typeof(response) == TYPE_ARRAY:
 		available_latest_version = latest_release_version(response as Array, current_version)
-#		
+		
 		if available_latest_version.size() > 0:
 			update_button.disabled = false
 			content.clear()
