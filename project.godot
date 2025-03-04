@@ -11,7 +11,9 @@ config_version=5
 [application]
 
 config/name="godot-plugin-template"
-config/features=PackedStringArray("4.3", "GL Compatibility")
+config/description="My personal template to create new plugins with placeholders to replace"
+config/version="1.0.0"
+config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [rendering]
