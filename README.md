@@ -7,9 +7,9 @@
    PLUGIN DESCRIPTION
 	<br />
 	·
-	<a href="https://github.com/ninetailsrabbit/[PLUGIN]/issues/new?assignees=ninetailsrabbit&labels=%F0%9F%90%9B+bug&projects=&template=bug_report.md&title=">Report Bug</a>
+	<a href="https://github.com/sempitern0/[PLUGIN]/issues/new?assignees=sempitern0&labels=%F0%9F%90%9B+bug&projects=&template=bug_report.md&title=">Report Bug</a>
 	·
-	<a href="https://github.com/ninetailsrabbit/[PLUGIN]/issues/new?assignees=ninetailsrabbit&labels=%E2%AD%90+feature&projects=&template=feature_request.md&title=">Request Features</a>
+	<a href="https://github.com/sempitern0/[PLUGIN]/issues/new?assignees=sempitern0&labels=%E2%AD%90+feature&projects=&template=feature_request.md&title=">Request Features</a>
   </p>
 </div>
 
@@ -20,7 +20,7 @@
 
 # 📦 Installation
 
-1. [Download Latest Release](https://github.com/ninetailsrabbit/[PLUGIN]/releases/latest)
+1. [Download Latest Release](https://github.com/sempitern0/[PLUGIN]/releases/latest)
 2. Unpack the `addons/[PLUGIN]` folder into your `/addons` folder within the Godot project
 3. Enable this addon within the Godot settings: `Project > Project Settings > Plugins`
 
