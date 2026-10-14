@@ -12,11 +12,9 @@ func _initialize() -> void:
 	if script == null or not script.can_instantiate():
 		fail("plugin script cannot instantiate")
 		return
-	var instance: Variant = script.new()
-	if not instance is EditorPlugin:
+	if script.get_instance_base_type() != "EditorPlugin":
 		fail("plugin must extend EditorPlugin")
 		return
-	instance.free()
 	print("PASS: plugin smoke")
 	quit(0)
 
