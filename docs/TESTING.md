@@ -20,3 +20,7 @@ The Godot runner imports the project headlessly, detects parser errors even if G
 5. Install **only** the plugin's `addons/<id>/` folder into a clean project and repeat the relevant checks.
 
 CI pins Godot 4.7.2-stable; visual editor-layout checks are manual because headless smoke tests do not prove pixel/layout behavior.
+
+## Native initializer parity
+
+CI separately creates a fresh copy and runs `scripts/init_plugin.gd` using Godot 4.7.2 without invoking the Python initializer. It validates the generated addon, updated project metadata and README, and runs a headless Godot import and smoke test. A second invocation must fail without overwriting files.

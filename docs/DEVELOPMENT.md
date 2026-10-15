@@ -8,7 +8,7 @@ Use the [recipe index](recipes/README.md) when you actually need a feature. Each
 
 ## Create your own plugin identity
 
-Run the accessible interactive initializer from a newly generated template repository:
+Run **one** of the accessible interactive initializers from a newly generated template repository. Python (if installed):
 
 ```bash
 python3 scripts/init_plugin.py
@@ -20,7 +20,15 @@ It asks for display name, snake_case ID and author; suggests an ID from the disp
 python3 scripts/init_plugin.py --id world_tools --name "World Tools" --author "Developer"
 ```
 
-The script renames `addons/my_plugin/` and updates the template's docs and smoke tests once. It refuses an existing destination or partial template and does not install packages or modify Godot's UI.
+Without Python, run Godot directly:
+
+```bash
+godot --headless --path . --script res://scripts/init_plugin.gd
+```
+
+To avoid prompts, use `-- --id world_tools --name "World Tools" --author "Developer"` after the script path. Windows users should use the Godot console executable for keyboard input. The Godot wizard uses clear plain-text prompts rather than terminal-specific color codes.
+
+Either script renames `addons/my_plugin/` and updates the template's docs and smoke tests once. It refuses an existing destination or partial template and does not install packages or modify Godot's UI.
 
 ## Choose an addon type
 

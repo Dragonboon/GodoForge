@@ -4,7 +4,7 @@
 
 **Build Godot plugins, not boilerplate.**
 
-A lean, reproducible starter for **Godot 4.7** plugins: interactive setup, optional copy-and-adapt recipes, and automated smoke tests.
+A lean, reproducible starter for **Godot 4.7** plugins: Python or native Godot CLI setup, optional copy-and-adapt recipes, and automated smoke tests.
 
 [![Godot 4.7](https://img.shields.io/badge/Godot-4.7-478CBF?logo=godotengine&logoColor=white)](https://godotengine.org/)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
@@ -22,7 +22,7 @@ A lean, reproducible starter for **Godot 4.7** plugins: interactive setup, optio
 
 GodoForge helps you ship a **small, modular Godot addon** without designing the scaffolding from scratch. It is a **GitHub repository template**, not a dependency, runtime framework, plugin manager, or code generator that guesses your plugin's features.
 
-- **Start fast:** a keyboard-friendly Python wizard asks for your plugin name, identifier and author, previews changes and requires confirmation.
+- **Start fast:** a keyboard-friendly Python or Godot CLI wizard asks for your plugin name, identifier and author, previews changes and requires confirmation.
 - **Nothing invasive:** enabling the unmodified starter registers no editor docks, bottom panels, menu items, autoloads or custom types.
 - **Learn only what you need:** practical, self-contained GDScript recipes for editor features, runtime code and release testing.
 - **Verify as you go:** Python regression tests plus a Godot **4.7.2** headless import and plugin smoke test in GitHub Actions.
@@ -32,7 +32,7 @@ GodoForge helps you ship a **small, modular Godot addon** without designing the 
 
 ### 1. Prepare your environment
 
-You'll need **Godot 4.7** (CI tests **4.7.2**), **Python 3.10+** and a GitHub account if you want to use the template button. No Python third-party packages are required. Git is useful for development.
+You'll need **Godot 4.7** (CI tests **4.7.2**) and a GitHub account if you want to use the template button. Python **3.10+** is optional: use the Godot-only initializer if Python is unavailable. No third-party packages are required. Git is useful for development.
 
 ### 2. Create your own repository
 
@@ -47,13 +47,28 @@ Alternatively, download the template sources and work locally. The setup script 
 
 ### 3. Initialize your plugin
 
-In an interactive terminal:
+Choose **one** initializer. Both produce the same plugin structure.
+
+**Option A — Python 3.10+**, in an interactive terminal:
 
 ```bash
 python3 scripts/init_plugin.py
 ```
 
-The wizard asks for a **display name**, **lowercase `snake_case` identifier** and **author**. It suggests an identifier, validates inputs, shows a summary, and only changes files after explicit confirmation. Press **Ctrl+C** to cancel; use `--no-color` or `NO_COLOR=1` if you prefer plain text.
+**Option B — Godot 4.7 CLI (no Python needed):**
+
+```bash
+godot --headless --path . --script res://scripts/init_plugin.gd
+```
+
+On Windows use the **console** build (`godot_console.exe`) for keyboard input. The native wizard uses plain text for compatibility. For unattended or CI use:
+
+```bash
+godot --headless --path . --script res://scripts/init_plugin.gd -- \
+  --id world_tools --name "World Tools" --author "Your Name"
+```
+
+Use `--help` after `--` for arguments. Both versions ask for a **display name**, **lowercase `snake_case` identifier** and **author**. It suggests an identifier, validates inputs, shows a summary, and only changes files after explicit confirmation. Press **Ctrl+C** to cancel; use `--no-color` or `NO_COLOR=1` if you prefer plain text.
 
 For CI or scripting, supply all arguments (no prompts):
 
@@ -97,6 +112,7 @@ docs/
   recipes/                   # Optional how-to guides
 scripts/
   init_plugin.py             # Interactive/flag-driven setup; Python stdlib only
+  init_plugin.gd             # Godot-native initializer; no Python needed
   ci/run_tests.py            # Strict headless Godot regression runner
 tests/
   test_plugin.gd             # Addon import smoke test
@@ -121,7 +137,7 @@ If Godot isn't on your PATH, use `--godot /absolute/path/to/Godot` (or set `GODO
 | Area | Supported / verified |
 | --- | --- |
 | Godot | **4.7** baseline; CI executable pinned to **4.7.2-stable** |
-| Language | GDScript for addon examples, Python **3.10+** for initializer/tests |
+| Language | GDScript for addon examples and native setup; optional Python **3.10+** for Python setup/tests |
 | Dependencies | Python standard library only |
 | Editor integrations | **None by default**; recipes are opt-in |
 | Older/newer Godot releases | **Not claimed compatible** until tested |
