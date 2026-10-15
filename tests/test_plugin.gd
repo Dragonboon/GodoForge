@@ -15,7 +15,7 @@ func _initialize() -> void:
 	if script.get_instance_base_type() != "EditorPlugin":
 		fail("plugin must extend EditorPlugin")
 		return
-	print("PASS: plugin smoke")
+	print("PASS: test_plugin")
 	quit(0)
 
 

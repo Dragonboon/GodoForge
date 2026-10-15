@@ -11,7 +11,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[2]
 ERROR = re.compile(r"(?:SCRIPT ERROR:|Parse Error:|Failed to load script|^ERROR:)", re.MULTILINE)
 
-def run(cmd: list[str], timeout: int, require_pass: bool = False) -> bool:
+def run(cmd: list[str], timeout: int, pass_marker: str | None = None) -> bool:
     print("$ " + " ".join(cmd), flush=True)
     try:
         proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True,
@@ -22,7 +22,7 @@ def run(cmd: list[str], timeout: int, require_pass: bool = False) -> bool:
     output = proc.stdout + "\n" + proc.stderr
     print(output, flush=True)
     ok = proc.returncode == 0 and not ERROR.search(output)
-    return bool(ok and (not require_pass or "PASS: plugin smoke" in output))
+    return bool(ok and (pass_marker is None or pass_marker in output))
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -37,7 +37,8 @@ def main() -> int:
         print("FAIL: no Godot tests found", file=sys.stderr)
         return 1
     for test in tests:
-        if not run(prefix + ["--script", f"res://tests/{test.name}"], args.timeout, True):
+        if not run(prefix + ["--script", f"res://tests/{test.name}"],
+                   args.timeout, f"PASS: {test.stem}"):
             return 1
     print(f"PASS: {len(tests)} Godot smoke test(s)")
     return 0

@@ -2,40 +2,49 @@
 
 ## Choose the right addon type
 
-- **Editor-only tool:** extend `EditorPlugin` in `plugin.gd`; use `@tool` for scripts that run in the editor. The included dock is an optional example.
-- **Runtime library:** put reusable gameplay scripts/resources in `src/`, and only use an EditorPlugin if editor registration is needed. A library that requires no editor hooks can omit `plugin.cfg`/`plugin.gd`.
-- **Hybrid:** keep editor integration in `plugin.gd` and gameplay features independent of the editor in `src/`.
-
-## Safe plugin lifecycle
-
-Register custom types, inspector plugins, docks and menus in `_enter_tree()`. Unregister each in `_exit_tree()`, disconnect signals you own, free created nodes, and clear references. Restart/disable/re-enable while testing to spot duplicate UI or lingering state.
-
-Godot 4.7's `EditorDock` enables moveable/floating dock UI. It is **an optional pattern**, not a requirement for every addon. Keep the example panel trivial until you need more.
-
-Avoid global `class_name` names for generic template helpers; they conflict with other installed addons. Prefer local preloads and plugin-relative paths. Never write user project settings just by enabling your plugin; prefer explicit opt-in and a reversible cleanup path.
+- **Editor-only tool:** extend `EditorPlugin` in `plugin.gd`; use `@tool` for scripts that run in the editor.
+- **Runtime library:** put reusable scripts/resources in `src/`; if you need no editor integration, you may omit `plugin.cfg` and `plugin.gd`.
+- **Hybrid:** isolate editor registration in `plugin.gd` and keep runtime modules editor-independent.
 
 ## Create a new addon
 
-Run the initializer **once**:
+For a guided terminal setup (colors when supported, clear prompts, validation, default ID and explicit confirmation):
+
+```bash
+python3 scripts/init_plugin.py
+```
+
+The wizard requests a display name, snake_case ID and author. Press Enter to accept the suggested ID; no files change until you confirm. Use `--no-color` for plain output, or set `NO_COLOR`. Ctrl+C cancels. Non-interactive shells fail safely unless all fields are supplied:
 
 ```bash
 python3 scripts/init_plugin.py --id world_tools --name "World Tools" --author "Developer"
 ```
 
-Identifiers must be lowercase snake_case, and names must be nonempty. The script renames `addons/my_plugin` and replaces the few known template markers, refuses overwrites, and will not run again after initialization. Review the generated `plugin.cfg` and `plugin.gd` before publishing.
+The command changes known template references and renames `addons/my_plugin` **once**; it refuses collisions and never overwrites an existing initialized addon.
 
-The script changes **template identity**, not game code. Replace the demo UI with your implementation, add self-contained modules under `src/`, and add tests for each behavior.
+## Inside Godot: the optional Plugin Guide dock
 
-## Packaging
+Enable the starter plugin in **Project > Project Settings > Plugins** and find **Plugin Guide** in a right-side tab. It contains six offline, selectable tutorials with steps, code to copy, and verification instructions:
 
-Ship **only** `addons/<plugin_id>/` for normal editor plugins. Keep test suites, standalone example projects, README and automation outside the distributable directory. Declare your verified minimum Godot version in your release notes, and test it; a newer project version in `project.godot` is not a proof of backward compatibility.
+1. Editor docks and reversible lifecycle
+2. Custom node registration
+3. Inspector extensions
+4. Tools menu actions
+5. Runtime Resource classes
+6. Smoke tests and packaging
 
-## Release checklist
+The content uses a scrollable container with no forced minimum height. Godot 4.7 supports side/floating `EditorDock` placement; this learning panel intentionally excludes bottom placement to avoid competing with Output/Debugger.
 
-1. Enable/disable the addon repeatedly; verify no orphan docks or errors.
-2. Import in a **fresh** Godot project using only `addons/<plugin_id>/`.
-3. Run headless checks on the targeted Godot versions.
-4. Verify no files or project settings are changed without user action.
-5. Tag a release with version, supported Godot versions and changelog.
+To remove the training UI, set `ENABLE_EXAMPLE_DOCK = false` in `plugin.gd`, or delete the demo registration and `editor/example_dock.gd` and `editor/guide_topics.gd`. Keep your own editor tools separate from runtime code.
 
-API: [Creating editor plugins](https://docs.godotengine.org/en/stable/tutorials/plugins/editor/making_plugins.html).
+## Lifecycle and compatibility
+
+Register types, docks, inspector plugins and menu items in `_enter_tree()` and undo registration in `_exit_tree()`. Avoid global `class_name` collisions, silent ProjectSettings writes and network/update features in the basic starter.
+
+**Layout caveat:** an oversized side dock can push the editor bottom panel offscreen in affected 4.7 builds. Do not assign large minimum dimensions to editor panels, and test at a small editor window size as well as after layout restoration. See [Godot issue #121574](https://github.com/godotengine/godot/issues/121574).
+
+## Packaging and release
+
+Ship only `addons/<plugin_id>/`. The template's tests, host `project.godot`, CI and docs are for developers only. Disable and re-enable the plugin repeatedly, install it into a fresh consuming project, run the targeted Godot versions, then tag the verified release.
+
+Official reference: [Godot 4.7 EditorDock](https://docs.godotengine.org/en/4.7/classes/class_editordock.html), [creating editor plugins](https://docs.godotengine.org/en/4.7/tutorials/plugins/editor/making_plugins.html).
