@@ -31,6 +31,10 @@ class InitializeTests(unittest.TestCase):
             self.assertIn("addons/world_tools", (root / "tests/test_plugin.gd").read_text())
             self.assertIn("addons/world_tools", (root / "docs/recipes/EDITOR_DOCK.md").read_text())
             self.assertIn("WorldToolsConfig", (root / "docs/recipes/RUNTIME_RESOURCE.md").read_text())
+            generated = (root / "README.md").read_text()
+            self.assertIn("# World Tools", generated)
+            self.assertNotIn("GodoForge —", generated)
+            self.assertIn("addons/world_tools/", generated)
             with self.assertRaises(ValueError):
                 mod.initialize("world_tools", "World Tools", "Dev", root)
 
