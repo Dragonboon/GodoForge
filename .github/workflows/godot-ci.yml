@@ -1,20 +1,23 @@
-name: Godot 4.7 starter checks
+name: GodoForge template integrity (Godot 4.7)
+
 on:
   push:
     branches: [main]
   pull_request:
   workflow_dispatch:
+
 permissions:
   contents: read
+
 jobs:
-  test:
+  template-integrity:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - name: Python initializer tests
+      - name: Check pristine template and initializer
         run: python3 -m unittest discover -s tests -p 'test_*.py'
-      - name: Install Godot 4.7.2
+      - name: Install pinned Godot 4.7.2-stable
         shell: bash
         run: |
           set -euo pipefail
@@ -22,5 +25,7 @@ jobs:
           unzip -q godot.zip
           chmod +x Godot_v4.7.2-stable_linux.x86_64
           ./Godot_v4.7.2-stable_linux.x86_64 --version
-      - name: Headless import and smoke
-        run: python3 scripts/ci/run_tests.py --godot ./Godot_v4.7.2-stable_linux.x86_64 --timeout 90
+      - name: Validate the GodoForge host project
+        run: python3 scripts/ci/run_tests.py --godot ./Godot_v4.7.2-stable_linux.x86_64
+      - name: Generate and validate a real sample plugin
+        run: python3 scripts/ci/check_generated.py --godot ./Godot_v4.7.2-stable_linux.x86_64

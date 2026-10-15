@@ -2,7 +2,7 @@
 
 ## Start without editor UI
 
-The starter contains just `addons/pooling/plugin.cfg` and an intentionally inert `plugin.gd`. Enabling it does **not** add an editor dock, bottom panel, inspector extension, menu or autoload. This keeps the host editor's layout unchanged.
+The starter contains just `addons/my_plugin/plugin.cfg` and an intentionally inert `plugin.gd`. Enabling it does **not** add an editor dock, bottom panel, inspector extension, menu or autoload. This keeps the host editor's layout unchanged.
 
 Use the [recipe index](recipes/README.md) when you actually need a feature. Each recipe names its destination file, includes a standalone implementation and cleanup, and ends with a manual verification step. **Don't copy everything:** mix only the features required for your plugin.
 
@@ -20,7 +20,7 @@ It asks for display name, snake_case ID and author; suggests an ID from the disp
 python3 scripts/init_plugin.py --id world_tools --name "World Tools" --author "Developer"
 ```
 
-The script renames `addons/pooling/` and updates the template's docs and smoke tests once. It refuses an existing destination or partial template and does not install packages or modify Godot's UI.
+The script renames `addons/my_plugin/` and updates the template's docs and smoke tests once. It refuses an existing destination or partial template and does not install packages or modify Godot's UI.
 
 ## Choose an addon type
 

@@ -35,6 +35,11 @@ class InitializeTests(unittest.TestCase):
             self.assertIn("# World Tools", generated)
             self.assertNotIn("GodoForge —", generated)
             self.assertIn("addons/world_tools/", generated)
+            self.assertNotIn("GodoForge", generated)
+            config = (root / "project.godot").read_text()
+            self.assertIn('config/name="World Tools"', config)
+            self.assertNotIn("<<<<<<<", config)
+            self.assertFalse((root / "addons/pooling").exists())
             with self.assertRaises(ValueError):
                 mod.initialize("world_tools", "World Tools", "Dev", root)
 

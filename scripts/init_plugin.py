@@ -110,6 +110,9 @@ def initialize(plugin_id: str, name: str, author: str, root: Path = ROOT) -> Non
     destination = root / "addons" / plugin_id
     if not original.is_dir() or destination.exists():
         raise ValueError("Template already initialized or destination already exists")
+    addon_dirs = sorted(p for p in (root / "addons").iterdir() if p.is_dir())
+    if addon_dirs != [original]:
+        raise ValueError("Expected only addons/my_plugin; refusing to modify other addons")
     paths = [root / path.relative_to(ROOT) for path in FILES]
     if not all(p.is_file() for p in paths):
         raise ValueError("Incomplete template; no changes made")
@@ -121,12 +124,20 @@ def initialize(plugin_id: str, name: str, author: str, root: Path = ROOT) -> Non
         if p.name == "plugin.cfg":
             content = content.replace("Template Author", author)
         if p.name == "project.godot":
-            content = content.replace('config/name="Godot Plugin Template"', f'config/name="{name}"')
+            content = content.replace('config/name="GodoForge"', f'config/name="{name}"')
+            content = content.replace(
+                'config/description="Minimal, modular Godot 4.7 plugin starter and developer toolkit."',
+                f'config/description="{name} plugin development project"'
+            )
         contents[p] = content
     # The branded starter README should not be inherited by newly generated addons.
     # Replace it with a focused, easily customized plugin README.
     template_path = root / "docs" / "PLUGIN_README_TEMPLATE.md"
-    contents[root / "README.md"] = contents[template_path].replace("GodotForge", name)
+    contents[root / "README.md"] = contents[template_path]
+    # Reject unresolved Git conflict markers before modifying any files.
+    for path, content in contents.items():
+        if re.search(r"(?m)^(?:<{7}|={7}|>{7})(?:\\s|$)", content):
+            raise ValueError(f"Unresolved Git conflict markers in {path}")
     for p, content in contents.items():
         p.write_text(content, encoding="utf-8")
     original.rename(destination)

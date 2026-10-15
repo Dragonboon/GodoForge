@@ -36,7 +36,8 @@ class StarterIntegrityTests(unittest.TestCase):
             file = RECIPES / filename
             self.assertTrue(file.is_file(), filename)
             self.assertIn(f"({filename})", index)
-            self.assertIn(f"(docs/recipes/{filename})", readme)
+            if readme.startswith("<div align=" + '"center"' + ">") or "# GodoForge" in readme:
+                self.assertIn(f"(docs/recipes/{filename})", readme)
             recipe = file.read_text(encoding="utf-8")
             self.assertIn("```gdscript", recipe)
             self.assertIn("## Verify", recipe)

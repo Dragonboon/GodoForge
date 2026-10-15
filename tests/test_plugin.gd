@@ -2,13 +2,13 @@ extends SceneTree
 
 func _initialize() -> void:
 	var config := ConfigFile.new()
-	if config.load("res://addons/pooling/plugin.cfg") != OK:
+	if config.load("res://addons/my_plugin/plugin.cfg") != OK:
 		fail("missing plugin manifest")
 		return
 	if config.get_value("plugin", "script", "") != "plugin.gd":
 		fail("incorrect plugin script")
 		return
-	var script: Script = load("res://addons/pooling/plugin.gd")
+	var script: Script = load("res://addons/my_plugin/plugin.gd")
 	if script == null or not script.can_instantiate():
 		fail("plugin script cannot instantiate")
 		return

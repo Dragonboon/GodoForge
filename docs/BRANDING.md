@@ -1,19 +1,16 @@
-# GodoForge branding and publishing
+# GodoForge project identity
 
-**Project name:** GodoForge
+GodoForge is a **GitHub repository template**, maintained at **[Dragonboon/GodoForge](https://github.com/Dragonboon/GodoForge)**.
 
-**Tagline:** Build Godot plugins, not boilerplate.
+- **Project name:** GodoForge
+- **Tagline:** Build Godot plugins, not boilerplate.
+- **Canonical repository:** https://github.com/Dragonboon/GodoForge
+- **Description:** Minimal Godot 4.7 plugin starter with an interactive setup wizard, practical recipes and CI.
+- **Topics:** `godot`, `godot4`, `gdscript`, `editor-plugin`, `plugin-template`, `gamedev`, `python`, `starter-template`
+- **GitHub setting:** Keep **Template repository** enabled for forks/new projects.
 
-The name is used for this *repository template*, not for addons created from it. `scripts/init_plugin.py` replaces the template's branded README with `docs/PLUGIN_README_TEMPLATE.md`, renaming the plugin identity. README links currently point to the canonical source repository URL, which remains unchanged until the maintainer explicitly renames it.
+**Do not initialize or rename the upstream template for a specific plugin.** Start with [Create from template](https://github.com/Dragonboon/GodoForge/generate), then run the one-time script in the generated repository.
 
-## Recommended GitHub repository settings
+The upstream `README.md` documents GodoForge; `docs/PLUGIN_README_TEMPLATE.md` provides a starter README for *newly generated plugins*. The initializer copies the plugin-specific version into the new repository's root and never edits the upstream project's content.
 
-If you rename the repository, the suggested slug is **`godoforge`** (GitHub: `sempitern0/godoforge`). Rename the actual repository separately via GitHub Settings; GitHub provides repository redirects, but review clone remotes, CI badges and integrations afterwards.
-
-- Description: `GodoForge — minimal Godot 4.7 plugin starter with an interactive setup wizard, practical recipes and CI.`
-- Topics: `godot`, `godot-engine`, `godot4`, `gdscript`, `editor-plugin`, `plugin-template`, `gamedev`, `python`, `starter-template`
-- Enable **Template repository**.
-- Decide whether to make the repository public before advertising the **Use this template** button.
-- Consider publishing a tagged release when the generated projects and clean-install walkthrough are manually verified.
-
-Use releases/tags for template milestones, not as the generated addons' own version guarantees. Avoid marketing badges that assert unverified platform or engine compatibility.
+Only claim verified engine compatibility. CI uses Godot 4.7.2-stable; projects generated from this template must validate their own supported versions.
