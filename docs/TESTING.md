@@ -13,7 +13,7 @@ The Godot runner imports the project headlessly, detects parser errors even if G
 
 ## Manual editor acceptance
 
-1. Open the Godot 4.7.2 project and enable **Pooling** in **Project > Project Settings > Plugins**.
+1. Open the Godot 4.7.2 project and enable **My Plugin** in **Project > Project Settings > Plugins**.
 2. Confirm there is **no additional tab, dock, panel or menu** and the bottom bar (Output/Debugger) is unchanged.
 3. Disable and re-enable the plugin and restart the editor; confirm no layout changes and no errors.
 4. Follow one [recipe](recipes/README.md) as needed, and test its registration/cleanup separately.

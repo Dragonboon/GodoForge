@@ -33,7 +33,7 @@ The runner imports using Godot headless editor mode and executes every `tests/te
 Only publish:
 
 ```text
-addons/pooling/
+addons/my_plugin/
   plugin.cfg
   plugin.gd
   src/                # only if your addon needs runtime modules

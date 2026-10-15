@@ -4,8 +4,8 @@
 
 ## Files to create
 
-- `addons/pooling/editor/my_inspector.gd`: the editor-only extension.
-- `addons/pooling/plugin.gd`: registration.
+- `addons/my_plugin/editor/my_inspector.gd`: the editor-only extension.
+- `addons/my_plugin/plugin.gd`: registration.
 
 ### 1. Inspector extension: `editor/my_inspector.gd`
 
@@ -18,7 +18,7 @@ func _can_handle(object: Object) -> bool:
 
 func _parse_begin(_object: Object) -> void:
     var label := Label.new()
-    label.text = "Pooling: Node2D tools"
+    label.text = "MyPlugin: Node2D tools"
     add_custom_control(label)
 ```
 

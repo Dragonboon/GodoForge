@@ -4,8 +4,8 @@
 
 ## Files to create
 
-- `addons/pooling/editor/tool_panel.gd`: the dock's Control content.
-- `addons/pooling/plugin.gd`: registration and cleanup.
+- `addons/my_plugin/editor/tool_panel.gd`: the dock's Control content.
+- `addons/my_plugin/plugin.gd`: registration and cleanup.
 
 ### 1. UI content: `editor/tool_panel.gd`
 
@@ -20,7 +20,7 @@ func _ready() -> void:
     add_child(content)
 
     var title := Label.new()
-    title.text = "Pooling Tools"
+    title.text = "MyPlugin Tools"
     content.add_child(title)
 ```
 
@@ -35,9 +35,9 @@ var _dock: EditorDock
 
 func _enter_tree() -> void:
     _dock = EditorDock.new()
-    _dock.name = "PoolingTools"
+    _dock.name = "MyPluginTools"
     _dock.title = "My Tools"
-    _dock.layout_key = "pooling_tools"
+    _dock.layout_key = "my_plugin_tools"
     _dock.default_slot = EditorDock.DOCK_SLOT_RIGHT_BR
     _dock.available_layouts = EditorDock.DOCK_LAYOUT_VERTICAL | EditorDock.DOCK_LAYOUT_FLOATING
     _dock.add_child(ToolPanel.new())

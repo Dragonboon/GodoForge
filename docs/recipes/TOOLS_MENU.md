@@ -4,13 +4,13 @@
 
 ## File to change
 
-- `addons/pooling/plugin.gd`
+- `addons/my_plugin/plugin.gd`
 
 ```gdscript
 @tool
 extends EditorPlugin
 
-const ACTION := "Pooling: Validate Scene"
+const ACTION := "MyPlugin: Validate Scene"
 
 func _enter_tree() -> void:
     add_tool_menu_item(ACTION, _validate_scene)
@@ -30,7 +30,7 @@ func _validate_scene() -> void:
 
 ## Verify
 
-1. Enable the plugin and find **Pooling: Validate Scene** under **Project > Tools**.
+1. Enable the plugin and find **MyPlugin: Validate Scene** under **Project > Tools**.
 2. Trigger it with and without a scene open; confirm a clear message.
 3. Disable the plugin and verify the menu item disappears.
 
