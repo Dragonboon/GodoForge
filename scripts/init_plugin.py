@@ -14,6 +14,7 @@ IDENTIFIER = re.compile(r"[a-z][a-z0-9]*(?:_[a-z0-9]+)*\Z")
 SOURCE = ROOT / "addons" / "my_plugin"
 FILES = [
     ROOT / "README.md",
+    ROOT / "docs" / "PLUGIN_README_TEMPLATE.md",
     ROOT / "project.godot",
     ROOT / "addons/my_plugin/plugin.cfg",
     ROOT / "addons/my_plugin/plugin.gd",
@@ -122,6 +123,10 @@ def initialize(plugin_id: str, name: str, author: str, root: Path = ROOT) -> Non
         if p.name == "project.godot":
             content = content.replace('config/name="Godot Plugin Template"', f'config/name="{name}"')
         contents[p] = content
+    # The branded starter README should not be inherited by newly generated addons.
+    # Replace it with a focused, easily customized plugin README.
+    template_path = root / "docs" / "PLUGIN_README_TEMPLATE.md"
+    contents[root / "README.md"] = contents[template_path].replace("GodotForge", name)
     for p, content in contents.items():
         p.write_text(content, encoding="utf-8")
     original.rename(destination)
