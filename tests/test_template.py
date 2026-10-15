@@ -7,6 +7,8 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 GIT_CONFLICT = re.compile(r"(?m)^(?:<{7}|={7}|>{7})(?:\s|$)")
 
+@unittest.skipUnless((ROOT / "addons/my_plugin/plugin.cfg").is_file(),
+                     "Upstream identity checks only apply before initialization")
 class TemplateHealthTests(unittest.TestCase):
     def test_project_is_valid_host(self):
         config_path = ROOT / "project.godot"
