@@ -15,14 +15,18 @@ SOURCE = ROOT / "addons" / "my_plugin"
 FILES = [
     ROOT / "README.md",
     ROOT / "project.godot",
-    SOURCE / "plugin.cfg",
-    SOURCE / "plugin.gd",
-    SOURCE / "editor" / "example_dock.gd",
-    SOURCE / "editor" / "guide_topics.gd",
-    ROOT / "tests" / "test_plugin.gd",
-    ROOT / "tests" / "test_guides.gd",
-    ROOT / "docs" / "DEVELOPMENT.md",
-    ROOT / "docs" / "TESTING.md",
+    ROOT / "addons/my_plugin/plugin.cfg",
+    ROOT / "addons/my_plugin/plugin.gd",
+    ROOT / "tests/test_plugin.gd",
+    ROOT / "docs/DEVELOPMENT.md",
+    ROOT / "docs/TESTING.md",
+    ROOT / "docs/recipes/README.md",
+    ROOT / "docs/recipes/EDITOR_DOCK.md",
+    ROOT / "docs/recipes/CUSTOM_NODE.md",
+    ROOT / "docs/recipes/INSPECTOR_PLUGIN.md",
+    ROOT / "docs/recipes/TOOLS_MENU.md",
+    ROOT / "docs/recipes/RUNTIME_RESOURCE.md",
+    ROOT / "docs/recipes/TESTING_RELEASE.md",
 ]
 
 def _valid_text(value: str) -> bool:

@@ -29,7 +29,8 @@ class InitializeTests(unittest.TestCase):
             self.assertIn('name="World Tools"', (root / "addons/world_tools/plugin.cfg").read_text())
             self.assertIn('author="Dev"', (root / "addons/world_tools/plugin.cfg").read_text())
             self.assertIn("addons/world_tools", (root / "tests/test_plugin.gd").read_text())
-            self.assertIn("addons/world_tools", (root / "tests/test_guides.gd").read_text())
+            self.assertIn("addons/world_tools", (root / "docs/recipes/EDITOR_DOCK.md").read_text())
+            self.assertIn("WorldToolsConfig", (root / "docs/recipes/RUNTIME_RESOURCE.md").read_text())
             with self.assertRaises(ValueError):
                 mod.initialize("world_tools", "World Tools", "Dev", root)
 

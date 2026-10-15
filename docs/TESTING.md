@@ -1,23 +1,22 @@
 # Testing
 
-Run from the template root with Godot 4.7:
+From your repository root with Godot 4.7 installed:
 
 ```bash
 python3 -m unittest discover -s tests -p 'test_*.py'
 python3 scripts/ci/run_tests.py --godot godot --timeout 90
 ```
 
-Python tests verify CLI flags, the new interactive wizard (including cancellation, TTY handling, suggested identifier, invalid input and no color), and the one-time rename without modifying your source checkout.
+Python tests cover the terminal wizard and its validation, noninteractive execution, cancellation and initializer file rename. They also assert that the default `plugin.gd` has **no UI registration** and that all cookbook entries exist.
 
-The Godot runner imports headlessly and then runs every `tests/test_*.gd`. Each must print `PASS: <test_filename_stem>` only on success, and call `quit(1)` on failure. The suite verifies plugin load and offline tutorial data; it does **not** prove that GUI sizing and docking behave correctly on all display sizes.
+The Godot runner imports the project headlessly, detects parser errors even if Godot exits with zero, then runs `tests/test_*.gd`. Each Godot test must print `PASS: <test_filename_stem>` only after its assertions succeed and use `quit(1)` on failures.
 
-## Manual editor checks
+## Manual editor acceptance
 
-1. Open Godot 4.7.2 and enable **My Plugin** in Project Settings.
-2. Verify the right-side **Plugin Guide** opens, and Output, Debugger and the bottom status bar remain accessible.
-3. Shrink the editor window, switch all six tutorials, scroll, select and copy sample code.
-4. Move the dock to another side slot or float it; disable/re-enable the plugin.
-5. Check no duplicate tabs, editor errors or changes to user project settings.
-6. Install only `addons/<plugin_id>/` into a clean project.
+1. Open the Godot 4.7.2 project and enable **My Plugin** in **Project > Project Settings > Plugins**.
+2. Confirm there is **no additional tab, dock, panel or menu** and the bottom bar (Output/Debugger) is unchanged.
+3. Disable and re-enable the plugin and restart the editor; confirm no layout changes and no errors.
+4. Follow one [recipe](recipes/README.md) as needed, and test its registration/cleanup separately.
+5. Install **only** the plugin's `addons/<id>/` folder into a clean project and repeat the relevant checks.
 
-CI pins Godot **4.7.2-stable** for import and scripting regression; interactive layout checks remain manual.
+CI pins Godot 4.7.2-stable; visual editor-layout checks are manual because headless smoke tests do not prove pixel/layout behavior.

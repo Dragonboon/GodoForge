@@ -1,50 +1,41 @@
-# Development guide
+# Developing plugins with this template
 
-## Choose the right addon type
+## Start without editor UI
 
-- **Editor-only tool:** extend `EditorPlugin` in `plugin.gd`; use `@tool` for scripts that run in the editor.
-- **Runtime library:** put reusable scripts/resources in `src/`; if you need no editor integration, you may omit `plugin.cfg` and `plugin.gd`.
-- **Hybrid:** isolate editor registration in `plugin.gd` and keep runtime modules editor-independent.
+The starter contains just `addons/my_plugin/plugin.cfg` and an intentionally inert `plugin.gd`. Enabling it does **not** add an editor dock, bottom panel, inspector extension, menu or autoload. This keeps the host editor's layout unchanged.
 
-## Create a new addon
+Use the [recipe index](recipes/README.md) when you actually need a feature. Each recipe names its destination file, includes a standalone implementation and cleanup, and ends with a manual verification step. **Don't copy everything:** mix only the features required for your plugin.
 
-For a guided terminal setup (colors when supported, clear prompts, validation, default ID and explicit confirmation):
+## Create your own plugin identity
+
+Run the accessible interactive initializer from a newly generated template repository:
 
 ```bash
 python3 scripts/init_plugin.py
 ```
 
-The wizard requests a display name, snake_case ID and author. Press Enter to accept the suggested ID; no files change until you confirm. Use `--no-color` for plain output, or set `NO_COLOR`. Ctrl+C cancels. Non-interactive shells fail safely unless all fields are supplied:
+It asks for display name, snake_case ID and author; suggests an ID from the display name; validates input; previews the result; and asks for confirmation. You can disable ANSI colors with `--no-color` or `NO_COLOR=1`. Ctrl+C cancels. No input is requested in automation: use all flags instead.
 
 ```bash
 python3 scripts/init_plugin.py --id world_tools --name "World Tools" --author "Developer"
 ```
 
-The command changes known template references and renames `addons/my_plugin` **once**; it refuses collisions and never overwrites an existing initialized addon.
+The script renames `addons/my_plugin/` and updates the template's docs and smoke tests once. It refuses an existing destination or partial template and does not install packages or modify Godot's UI.
 
-## Inside Godot: the optional Plugin Guide dock
+## Choose an addon type
 
-Enable the starter plugin in **Project > Project Settings > Plugins** and find **Plugin Guide** in a right-side tab. It contains six offline, selectable tutorials with steps, code to copy, and verification instructions:
+- **Editor tool:** create `@tool` scripts under `addons/<id>/editor/` and register editor features in `plugin.gd`.
+- **Runtime library:** put Godot `Node`/`Resource` modules under `addons/<id>/src/`; avoid dependencies on editor-only APIs.
+- **Hybrid:** expose runtime APIs under `src/` and keep optional editor integrations behind `EditorPlugin`.
 
-1. Editor docks and reversible lifecycle
-2. Custom node registration
-3. Inspector extensions
-4. Tools menu actions
-5. Runtime Resource classes
-6. Smoke tests and packaging
+The base plugin intentionally leaves `_enter_tree()` and `_exit_tree()` empty. When adding editor registrations, undo each in `_exit_tree()`: menu items, custom types, docks, inspector plugins and signal connections. Do not register a dock just to show documentation.
 
-The content uses a scrollable container with no forced minimum height. Godot 4.7 supports side/floating `EditorDock` placement; this learning panel intentionally excludes bottom placement to avoid competing with Output/Debugger.
+## Editor layout recovery
 
-To remove the training UI, set `ENABLE_EXAMPLE_DOCK = false` in `plugin.gd`, or delete the demo registration and `editor/example_dock.gd` and `editor/guide_topics.gd`. Keep your own editor tools separate from runtime code.
+If the earlier learning dock changed your editor layout, **disable the old plugin**, reopen the editor and select **Editor > Editor Layouts > Default** to restore the standard layout. The new starter no longer creates that dock, so it cannot reintroduce it. If you have saved a custom layout, choose your saved layout instead. See [Godot: Customizing the interface](https://docs.godotengine.org/en/4.7/tutorials/editor/customizing_editor.html).
 
-## Lifecycle and compatibility
+## Compatibility and release
 
-Register types, docks, inspector plugins and menu items in `_enter_tree()` and undo registration in `_exit_tree()`. Avoid global `class_name` collisions, silent ProjectSettings writes and network/update features in the basic starter.
+Use Godot 4.7 features only if you target 4.7. The host project's feature declaration is not proof that a feature works in an older version. Test against every supported engine version.
 
-**Layout caveat:** an oversized side dock can push the editor bottom panel offscreen in affected 4.7 builds. Do not assign large minimum dimensions to editor panels, and test at a small editor window size as well as after layout restoration. See [Godot issue #121574](https://github.com/godotengine/godot/issues/121574).
-
-## Packaging and release
-
-Ship only `addons/<plugin_id>/`. The template's tests, host `project.godot`, CI and docs are for developers only. Disable and re-enable the plugin repeatedly, install it into a fresh consuming project, run the targeted Godot versions, then tag the verified release.
-
-Official reference: [Godot 4.7 EditorDock](https://docs.godotengine.org/en/4.7/classes/class_editordock.html), [creating editor plugins](https://docs.godotengine.org/en/4.7/tutorials/plugins/editor/making_plugins.html).
+Only `addons/<id>/` belongs in the installable package. Keep documentation, CI, tests, examples and the template host `project.godot` outside it. Test in a fresh consuming project before publishing.

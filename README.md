@@ -1,54 +1,71 @@
 # Godot Plugin Template
 
-A small, modular starting point for **Godot 4.7** editor plugins. [Use this template](https://github.com/sempitern0/godot-plugin-template/generate) to create your own repository.
+A **minimal Godot 4.7 plugin starter** with a guided setup CLI, headless checks and practical recipes. [Create a repository from this template](https://github.com/sempitern0/godot-plugin-template/generate).
 
-## Start in three steps
+**This template adds nothing to the Godot editor UI by default.** No sample docks, bottom panels, menus, project settings or autoloads are registered. Enable the plugin in Project Settings to verify its lifecycle, then opt into only the features you want.
 
-1. Install **Godot 4.7.2** (or a compatible 4.7 release) and Python 3.10+.
-2. Run **`python3 scripts/init_plugin.py`** from the new repository root. Follow the accessible terminal wizard to enter a name, ID and author; review and confirm. For CI, use `--id world_tools --name "World Tools" --author "Developer"`.
-3. Open `project.godot` in Godot, then enable the plugin at **Project > Project Settings > Plugins**.
+## Quick start
 
-The optional right-side **Plugin Guide** dock contains six offline tutorials (editor dock, custom node, Inspector, Tools menu, resources, tests) with selectable snippets and a copy button. It uses scrollable content instead of forcing editor height; its layout does not include the bottom panel. Remove it before publishing if it is not part of your addon.
+1. Install Godot **4.7.2** (or another compatible 4.7 version) and Python 3.10+.
+2. Run `python3 scripts/init_plugin.py` from your new repository: the terminal wizard asks for a name, ID and author and confirms the changes before creating your plugin. For automation use:
 
-## Layout
+   ```bash
+   python3 scripts/init_plugin.py --id world_tools --name "World Tools" --author "Developer"
+   ```
+
+3. Open `project.godot`, enable the plugin under **Project > Project Settings > Plugins**, and choose a [recipe](docs/recipes/README.md) to implement a specific feature.
+
+## How do I implement X in Godot?
+
+The [**recipe index**](docs/recipes/README.md) gives short, independent examples with file locations, GDScript, cleanup and a checklist:
+
+| I want to... | Guide |
+| --- | --- |
+| Add an editor dock (only when needed) | [Editor dock](docs/recipes/EDITOR_DOCK.md) |
+| Register a custom node | [Custom node](docs/recipes/CUSTOM_NODE.md) |
+| Extend the Inspector | [Inspector plugin](docs/recipes/INSPECTOR_PLUGIN.md) |
+| Add a Project > Tools command | [Tools menu](docs/recipes/TOOLS_MENU.md) |
+| Share data with a runtime Resource | [Runtime Resource](docs/recipes/RUNTIME_RESOURCE.md) |
+| Add a smoke test and prepare a release | [Testing & release](docs/recipes/TESTING_RELEASE.md) |
+
+These **documentation-only examples** are not installed into the Godot editor or the addon until you copy the relevant snippet.
+
+## Project layout
 
 ```text
 addons/my_plugin/
-  plugin.cfg                  # Godot plugin manifest
-  plugin.gd                   # EditorPlugin registration and cleanup
-  editor/example_dock.gd     # Optional, scrollable learning interface
-  editor/guide_topics.gd     # Optional, offline how-to recipes
-  src/                        # Runtime features: add only what you need
+  plugin.cfg          # plugin metadata
+  plugin.gd           # intentionally empty EditorPlugin lifecycle
 docs/
-  DEVELOPMENT.md              # Creating editor features, packaging, compatibility
-  TESTING.md                  # Local checks and GUI checklist
+  recipes/            # opt-in "how to implement X" guides
+  DEVELOPMENT.md      # design, initialization and lifecycle
+  TESTING.md          # automated and manual checks
 scripts/
-  init_plugin.py              # One-time wizard or noninteractive CLI
-  ci/run_tests.py             # Headless Godot checks
+  init_plugin.py      # accessible interactive wizard / CLI
+  ci/run_tests.py     # strict Godot headless regression
 tests/
-  test_plugin.gd              # Plugin import smoke test
-  test_guides.gd              # Offline guide data and layout smoke test
+  test_plugin.gd      # plugin smoke test
+  test_initializer.py # CLI/wizard regression tests
+  test_recipes.py     # no UI by default; recipe integrity
 ```
 
-Only `addons/<your_id>/` is distributed to consuming projects. Do not copy the test suite, CI or template's host project.
-
-## Verify
+## Validate
 
 ```bash
 python3 -m unittest discover -s tests -p 'test_*.py'
 python3 scripts/ci/run_tests.py --godot godot
 ```
 
-See [Development](docs/DEVELOPMENT.md), [Testing](docs/TESTING.md) and [Contributing](CONTRIBUTING.md). Godot versions are validated by CI; support beyond 4.7 is not implied.
+Distribute **only** `addons/<plugin_id>/` to downstream Godot projects. Neither docs, tests, build scripts nor the host project are required.
 
-## Principles
+## Philosophy
 
-- **Minimal:** no updater, network requests, autoloads, or global classes by default.
-- **Modular:** editor-only integration lives in `plugin.gd`/`editor`; optional runtime modules go in `src/`.
-- **Reversible:** resources are registered on enter and removed on exit.
-- **Accessible:** plain-text terminal prompts and keyboard-navigable, scrollable guides.
-- **Portable:** relative plugin paths, no repository-specific runtime dependencies after initialization.
+- Minimal by default; examples exist in documentation, not in running code.
+- Modular and reversible editor integrations, with cleanup in `_exit_tree()`.
+- Editor and runtime logic stay separate; no hidden project mutations.
+- Accessible setup: labels, keyboard input, clear errors, `--no-color`/`NO_COLOR`, and explicit confirmation.
+- Verified against Godot 4.7.2 in CI; other engine versions require their own compatibility validation.
 
-Inspired by [Atrium](https://github.com/Dragonboon/Atrium) (editor docking), [Trispark](https://github.com/Dragonboon/Trispark) (modular features), and [JigsawG](https://github.com/Dragonboon/JigsawG) (slim entry point and regression tests).
+Design references: [Atrium](https://github.com/Dragonboon/Atrium), [Trispark](https://github.com/Dragonboon/Trispark) and [JigsawG](https://github.com/Dragonboon/JigsawG).
 
-MIT licensed. This repository is a **template**, not a published runtime dependency.
+MIT licensed. This repository is a template, not a runtime framework.
