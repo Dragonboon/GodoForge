@@ -1,6 +1,6 @@
 # Godot 4.7 recipes: how to implement X in Y
 
-All recipes are **opt-in documentation**. They do not run on plugin activation, alter the editor layout or ship any UI code in the starter. Paths in examples use `addons/my_plugin/` and are renamed by `scripts/init_plugin.py` when you initialize your copy.
+All recipes are **opt-in documentation**. They do not run on plugin activation, alter the editor layout or ship any UI code in the starter. Paths in examples use `addons/pooling/` and are renamed by `scripts/init_plugin.py` when you initialize your copy.
 
 | Feature | Where it belongs | Recipe |
 | --- | --- | --- |

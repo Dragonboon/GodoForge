@@ -1,4 +1,4 @@
-# My Plugin
+# Pooling
 
 > Replace this placeholder with your plugin's purpose in one sentence.
 
@@ -8,8 +8,8 @@
 
 ## Installation
 
-1. Copy the `addons/my_plugin/` directory into the target project's `addons/` directory.
-2. If this is an editor plugin, enable **My Plugin** at **Project → Project Settings → Plugins**.
+1. Copy the `addons/pooling/` directory into the target project's `addons/` directory.
+2. If this is an editor plugin, enable **Pooling** at **Project → Project Settings → Plugins**.
 
 ## Usage
 

@@ -4,8 +4,8 @@
 
 ## Files to create
 
-- `addons/my_plugin/src/my_marker.gd`: the node's behavior.
-- `addons/my_plugin/plugin.gd`: editor registration.
+- `addons/pooling/src/my_marker.gd`: the node's behavior.
+- `addons/pooling/plugin.gd`: editor registration.
 
 ### 1. Runtime node: `src/my_marker.gd`
 
@@ -25,17 +25,17 @@ extends EditorPlugin
 const Marker = preload("src/my_marker.gd")
 
 func _enter_tree() -> void:
-    add_custom_type("MyPluginMarker", "Node2D", Marker, null)
+    add_custom_type("PoolingMarker", "Node2D", Marker, null)
 
 func _exit_tree() -> void:
-    remove_custom_type("MyPluginMarker")
+    remove_custom_type("PoolingMarker")
 ```
 
 This registers a script-backed node in the editor. Pick a unique type name to avoid collision with other plugins; it is different from declaring a global `class_name`.
 
 ## Verify
 
-1. Enable the plugin and search for **MyPluginMarker** in **Create Node**.
+1. Enable the plugin and search for **PoolingMarker** in **Create Node**.
 2. Instantiate it, change `label`, save and reopen a scene.
 3. Disable the addon and ensure no duplicate type remains in the Create Node list.
 
