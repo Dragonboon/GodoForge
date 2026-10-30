@@ -36,3 +36,37 @@ For initializer/packaging changes, additionally use the existing `scripts/ci/che
 ## Change and delivery discipline
 
 Make the smallest compatible patch, with targeted regression coverage for behavior changes. Preserve template portability and public documentation. When explicitly authorized, commit only the requested changes to current `main` without force pushing or discarding concurrent edits. Summarize touched paths, commands actually run, results and remaining manual/editor verification. Never claim CI success without checking the commit's actual run.
+
+## Feature contract and evidence
+
+Before changing behavior, record a short contract in the task or review:
+
+- Observable problem and acceptance example.
+- Existing state owner, direct consumers and reusable native/addon mechanism.
+- Smallest missing behavior; defaults, serialized fields, signals and compatibility affected.
+- Focused reproduction, failure/cancel case and integration evidence.
+
+Template-specific acceptance includes refusal to overwrite, temporary-copy initialization
+and complete editor registration cleanup. Keep one writable owner for each state. Prefer an existing extension point to a
+second manager; keep host-game policy outside the addon. A new shared abstraction
+needs two concrete independent consumer scenarios, not two copies of one demo.
+Trace actual instantiation, signal connections and teardown: a class name found
+by search does not prove that the scene uses it.
+
+Read branch/HEAD, source signatures and the nearest caller/test before trusting
+old chat, roadmap or generated summaries. Use narrow searches and expand context
+only when dependencies require it. Preserve tracked UIDs; generate new ones with
+Godot. Review exported names, enums, defaults and save formats against the base
+revision; document migration/version decisions for incompatible changes.
+
+Validate progressively: documentation paths/links for docs-only work; import and
+focused regression for logic; full existing suite for shared contracts; graphical
+input/editor and clean addon-only installation for affected surfaces. Tests must
+assert observable behavior, not repeat implementation details. Include invalid
+input, repeated invocation, cancellation, freed references or tree reentry when
+the changed lifetime permits them. Do not turn this list into speculative scope.
+
+Report the owner, real wiring, changed contract, exact checks/results and skipped
+checks. Separate static review, engine execution, graphical/device observation
+and benchmarks. No invented quality, performance or agent-productivity gains;
+compare baseline/final on the same scenario and hardware before quantifying.
